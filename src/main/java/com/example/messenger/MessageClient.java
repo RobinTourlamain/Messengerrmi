@@ -29,6 +29,8 @@ package com.example.messenger;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javafx.scene.control.TextField;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -44,5 +46,22 @@ public class MessageClient {
         ReceiveClientThread receive = new ReceiveClientThread(socket);
         receive.start();
 
+    }
+
+    public void rcvMessagesFromServer(TextField txtfld_incoming) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(socket.isConnected()){
+                    try{
+                        String msg = reader.readLine();
+                        MessageController.rcvMessage(msg, txtfld_incoming);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }).start();
     }
 }
