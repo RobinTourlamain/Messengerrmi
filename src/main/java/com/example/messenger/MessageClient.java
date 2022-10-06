@@ -36,16 +36,44 @@ import java.net.Socket;
 
 public class MessageClient {
 
-    public static void start() throws IOException{
+    private PrintWriter writer;
+    private BufferedReader reader;
+    private Socket socket;
 
-        Socket socket = new Socket("localhost", 1234);
+    public MessageClient(Socket socket){
+        try {
+//            Socket socket = new Socket("localhost", 1234);
+                    this.socket = socket;
+                    this.writer = new PrintWriter(socket.getOutputStream(), true);
+                    SendClientThread send = new SendClientThread(socket, writer);
+                    send.start();
+                    this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                    ReceiveClientThread receive = new ReceiveClientThread(socket, reader);                interfered met rcvMessages functie verder
+//                    receive.start();
+        }
+        catch (Exception ignored) {
 
-        SendClientThread send = new SendClientThread(socket);
-        send.start();
+        }
 
-        ReceiveClientThread receive = new ReceiveClientThread(socket);
-        receive.start();
+    }
 
+    public void sendMsgToServer(String msg){
+        try{
+            writer.write(msg);
+            writer.println();
+            writer.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public PrintWriter getWriter() {
+        return writer;
+    }
+
+    public BufferedReader getReader() {
+        return reader;
     }
 
     public void rcvMessagesFromServer(TextField txtfld_incoming) {

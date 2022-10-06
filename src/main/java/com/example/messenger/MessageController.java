@@ -42,6 +42,8 @@ public class MessageController implements Initializable {
     public void onClient2ButtonClick(){
 
     }
+
+    @FXML
     public void onSendButtonClick(){
         messageClient.sendMsgToServer(Txtfld_outgoing.getText());
         Txtfld_outgoing.clear();
