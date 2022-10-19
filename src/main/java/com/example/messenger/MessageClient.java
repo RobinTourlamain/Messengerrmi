@@ -30,6 +30,7 @@ package com.example.messenger;/*
  */
 
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 import java.io.*;
 import java.net.Socket;
@@ -67,27 +68,14 @@ public class MessageClient {
         }
     }
 
-
-    public PrintWriter getWriter() {
-        return writer;
-    }
-
-    public BufferedReader getReader() {
-        return reader;
-    }
-
-    public void rcvMessagesFromServer(TextField txtfld_incoming) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(socket.isConnected()){
-                    try{
-                        String msg = reader.readLine();
-                        MessageController.rcvMessage(msg, txtfld_incoming);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+    public void rcvMessagesFromServer(VBox vbox_incoming) {
+        new Thread(() -> {
+            while(true){
+                try{
+                    String msg = chat.receive();
+                    MessageController.rcvMessage(msg, vbox_incoming);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
