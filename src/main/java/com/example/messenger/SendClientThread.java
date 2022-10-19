@@ -7,29 +7,23 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class SendClientThread extends Thread {
-    private Socket socket = null;
-    private PrintWriter writer = null;
+    private final Chat chat;
 
-    public SendClientThread(Socket socket, PrintWriter writer) {
-        this.socket = socket;
-        this.writer = writer;
+    public SendClientThread(Chat chat) {
+        this.chat = chat;
     }
 
     public void run(){
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-            String fromUser = null;
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        String fromUser = null;
 
-            while (true) {
-                try {
-                    if ((fromUser = stdIn.readLine()) == null) break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                writer.println(fromUser);
+        while (true) {
+            try {
+                if ((fromUser = stdIn.readLine()) == null) break;
+                chat.send(fromUser);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-    }
-
-    public void send(String s){
-
+        }
     }
 }

@@ -37,32 +37,15 @@ import java.net.Socket;
 
 public class MessageClient {
 
-    private PrintWriter writer;
-    private BufferedReader reader;
-    private Socket socket;
+    private Chat chat;
 
-    public MessageClient(Socket socket){
-        try {
-//            Socket socket = new Socket("localhost", 1234);
-                    this.socket = socket;
-                    this.writer = new PrintWriter(socket.getOutputStream(), true);
-                    SendClientThread send = new SendClientThread(socket, writer);
-                    send.start();
-                    this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                    ReceiveClientThread receive = new ReceiveClientThread(socket, reader);                interfered met rcvMessages functie verder
-//                    receive.start();
-        }
-        catch (Exception ignored) {
-
-        }
-
+    public MessageClient(Chat chat){
+        this.chat = chat;
     }
 
     public void sendMsgToServer(String msg){
         try{
-            writer.write(msg);
-            writer.println();
-            writer.flush();
+            chat.send(msg);
         } catch (Exception e) {
             e.printStackTrace();
         }

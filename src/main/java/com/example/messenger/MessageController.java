@@ -19,6 +19,10 @@ import javafx.scene.text.TextFlow;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MessageController implements Initializable {
@@ -37,8 +41,12 @@ public class MessageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try{
-            messageClient = new MessageClient(new Socket("localhost" ,1234));
-        } catch (IOException e) {
+            Registry myRegistry = LocateRegistry.getRegistry("localhost", 1099);
+
+            Chat chat = (Chat) myRegistry.lookup("ChatService");
+
+            messageClient = new MessageClient(chat);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         messageClient.rcvMessagesFromServer(Vbox_messages);
